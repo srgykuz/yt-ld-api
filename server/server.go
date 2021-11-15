@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Amaimersion/yt-alt-ld-api/logger"
 	"github.com/felixge/httpsnoop"
+
+	"github.com/Amaimersion/yt-alt-ld-api/logger"
 )
 
 // ListenAndServe executes server on given host and port.
