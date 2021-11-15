@@ -39,7 +39,7 @@ func main() {
 		os.Exit(0)
 	}()
 
-	err = server.ListenAndServe(cfg.Address, cfg.Port)
+	err = server.ListenAndServe(cfg.Host, cfg.Port)
 
 	fmt.Fprintf(os.Stderr, "listen error: %v\n", err)
 	cleanup()

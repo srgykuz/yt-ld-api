@@ -6,8 +6,8 @@ import (
 
 // Config is the app configuration.
 type Config struct {
-	// Bind server to this IP.
-	Address string
+	// Bind server to this IP address.
+	Host string
 
 	// Bind server to this TCP port.
 	Port string
@@ -22,7 +22,7 @@ type Config struct {
 }
 
 const (
-	defaultAddress     = "0.0.0.0"
+	defaultHost        = "0.0.0.0"
 	defaultPort        = "8080"
 	defaultInfoOutput  = "/dev/stderr"
 	defaultDebugOutput = "/dev/stderr"
@@ -43,10 +43,10 @@ func readFlags() Config {
 	cfg := Config{}
 
 	flag.StringVar(
-		&cfg.Address,
-		"address",
-		defaultAddress,
-		"Bind server to this IP.",
+		&cfg.Host,
+		"host",
+		defaultHost,
+		"Bind server to this IP address.",
 	)
 	flag.StringVar(
 		&cfg.Port,
