@@ -46,13 +46,13 @@ func readFlags() Config {
 		&cfg.Host,
 		"host",
 		defaultHost,
-		"Bind server to this IP address.",
+		"Bind server to this host. IP or host name.",
 	)
 	flag.StringVar(
 		&cfg.Port,
 		"port",
 		defaultPort,
-		"Bind server to this TCP port.",
+		"Bind server to this TCP port. Number or service name.",
 	)
 	flag.StringVar(
 		&cfg.InfoOutput,
