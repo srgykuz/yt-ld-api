@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "main.go",
+            "args": [
+                "--address",
+                "127.0.0.1",
+                "--port",
+                "8080",
+                "--infoLog",
+                "/dev/stderr",
+                "--debugLog",
+                "/dev/stderr"
+            ]
+        }
+    ]
+}
