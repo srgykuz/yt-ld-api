@@ -6,6 +6,7 @@ import (
 
 	"github.com/felixge/httpsnoop"
 
+	"github.com/Amaimersion/yt-alt-ld-api/handler"
 	"github.com/Amaimersion/yt-alt-ld-api/logger"
 )
 
@@ -27,7 +28,22 @@ func ListenAndServe(host string, port int) error {
 }
 
 func createHandler() http.Handler {
+	const prefix = "/v0"
+	const (
+		pathLike          = prefix + "/like"
+		pathDislike       = prefix + "/dislike"
+		pathRemoveLike    = prefix + "/remove-like"
+		pathRemoveDislike = prefix + "/remove-dislike"
+		pathStat          = prefix + "/stat"
+	)
+
 	mux := http.NewServeMux()
+
+	mux.HandleFunc(pathLike, handler.HandleLike)
+	mux.HandleFunc(pathDislike, handler.HandleDislike)
+	mux.HandleFunc(pathRemoveLike, handler.HandleRemoveLike)
+	mux.HandleFunc(pathRemoveDislike, handler.HandleRemoveDislike)
+	mux.HandleFunc(pathStat, handler.HandleStat)
 
 	handler := logReqResMiddleware(mux)
 
