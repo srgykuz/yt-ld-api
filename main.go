@@ -15,14 +15,14 @@ func main() {
 	cfg, err := config.Read()
 
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "unable to read config: %s", err)
+		fmt.Fprintf(os.Stderr, "unable to read config: %v\n", err)
 		os.Exit(1)
 	}
 
 	closeLogs, err := configureLogger(cfg)
 
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "unable to configure logger: %s", err)
+		fmt.Fprintf(os.Stderr, "unable to configure logger: %v\n", err)
 		os.Exit(1)
 	}
 
@@ -34,7 +34,7 @@ func main() {
 		sigs := listenTerminateSignals()
 		sig := <-sigs
 
-		fmt.Fprintf(os.Stderr, "signal: %v\n", sig)
+		fmt.Fprintf(os.Stdout, "signal: %v\n", sig)
 		cleanup()
 		os.Exit(0)
 	}()
