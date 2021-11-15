@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"net"
 	"net/http"
 
 	"github.com/Amaimersion/yt-alt-ld-api/handler"
@@ -12,8 +13,8 @@ import (
 // It will listen and serve HTTP requests.
 //
 // It is a blocking function. This function always returns non-nil error.
-func ListenAndServe(host string, port int) error {
-	addr := host + ":" + fmt.Sprint(port)
+func ListenAndServe(host, port string) error {
+	addr := net.JoinHostPort(host, port)
 	handler := createHandler()
 
 	logger.Info(

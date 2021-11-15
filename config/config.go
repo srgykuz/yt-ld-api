@@ -10,7 +10,7 @@ type Config struct {
 	Address string
 
 	// Bind server to this TCP port.
-	Port int
+	Port string
 
 	// Output info logs to this file.
 	// Use /dev/null to disable info logs.
@@ -23,7 +23,7 @@ type Config struct {
 
 const (
 	defaultAddress     = "0.0.0.0"
-	defaultPort        = 8080
+	defaultPort        = "8080"
 	defaultInfoOutput  = "/dev/stderr"
 	defaultDebugOutput = "/dev/stderr"
 )
@@ -48,7 +48,7 @@ func readFlags() Config {
 		defaultAddress,
 		"Bind server to this IP.",
 	)
-	flag.IntVar(
+	flag.StringVar(
 		&cfg.Port,
 		"port",
 		defaultPort,
