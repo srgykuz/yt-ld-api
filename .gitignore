@@ -1,2 +1,6 @@
 yt-alt-ld-api
 *.exe
+
+# VSCode
+.vscode/*
+!.vscode/launch.json
