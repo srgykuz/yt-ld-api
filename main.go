@@ -3,9 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/Amaimersion/yt-alt-ld-api/config"
 	"github.com/Amaimersion/yt-alt-ld-api/logger"
+	"github.com/Amaimersion/yt-alt-ld-api/server"
 )
 
 func main() {
@@ -23,7 +26,24 @@ func main() {
 		os.Exit(1)
 	}
 
-	defer closeLogs()
+	cleanup := func() {
+		closeLogs()
+	}
+
+	go func() {
+		sigs := listenTerminateSignals()
+		sig := <-sigs
+
+		fmt.Fprintf(os.Stderr, "signal: %v\n", sig)
+		cleanup()
+		os.Exit(0)
+	}()
+
+	err = server.ListenAndServe(cfg.Address, cfg.Port)
+
+	fmt.Fprintf(os.Stderr, "listen error: %v\n", err)
+	cleanup()
+	os.Exit(1)
 }
 
 func configureLogger(cfg config.Config) (func(), error) {
@@ -49,4 +69,12 @@ func configureLogger(cfg config.Config) (func(), error) {
 	logger.SetDebugOutput(debugF)
 
 	return closeF, nil
+}
+
+func listenTerminateSignals() <-chan os.Signal {
+	sigs := make(chan os.Signal, 1)
+
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+
+	return sigs
 }
