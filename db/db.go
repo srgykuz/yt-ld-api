@@ -11,8 +11,7 @@ import (
 
 // Open opens a database and connects to it.
 // You should call this function only once.
-func Open() (*sql.DB, error) {
-	cfg := config.ReadEnv()
+func Open(cfg config.EnvConfig) (*sql.DB, error) {
 	connStr := fmt.Sprintf(
 		"postgres://%v:%v@%v:%v/%v?sslmode=disable&connect_timeout=10",
 		cfg.DBUser,
