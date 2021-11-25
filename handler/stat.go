@@ -3,6 +3,9 @@ package handler
 import (
 	"database/sql"
 	"net/http"
+
+	"github.com/Amaimersion/yt-alt-ld-api/db"
+	"github.com/Amaimersion/yt-alt-ld-api/logger"
 )
 
 // HandleStat handles "statistics" request.
@@ -17,17 +20,22 @@ func HandleStat(w http.ResponseWriter, req *http.Request, database *sql.DB) {
 	switch req.Method {
 	case http.MethodGet:
 		var args videoInfoArgs
-		err := decodeRequestQuery(req, &args)
 
-		if err != nil {
+		if err := decodeRequestQuery(req, &args); err != nil {
 			resp.status = http.StatusBadRequest
 			break
 		}
 
-		result, err := readStat(args)
+		result, err := getStat(database, args)
 
 		if err != nil {
-			resp.status = http.StatusBadRequest
+			if err == db.ErrNoRow {
+				resp.status = http.StatusNotFound
+			} else {
+				resp.status = http.StatusInternalServerError
+				logger.Info(err.Error())
+			}
+
 			break
 		}
 
@@ -39,12 +47,21 @@ func HandleStat(w http.ResponseWriter, req *http.Request, database *sql.DB) {
 	resp.write(w)
 }
 
-type readStatResult struct {
-	VideoID string `json:"videoID"`
+type getStatResult struct {
+	LikesCount    int `json:"likesCount"`
+	DislikesCount int `json:"dislikesCount"`
 }
 
-func readStat(args videoInfoArgs) (readStatResult, error) {
-	result := readStatResult(args)
+func getStat(database *sql.DB, args videoInfoArgs) (getStatResult, error) {
+	var result getStatResult
+	reaction, err := db.ReadReaction(database, args.VideoID)
+
+	if err != nil {
+		return result, err
+	}
+
+	result.LikesCount = reaction.LikesCount
+	result.DislikesCount = reaction.DislikesCount
 
 	return result, nil
 }

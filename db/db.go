@@ -2,11 +2,17 @@ package db
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 
 	_ "github.com/lib/pq"
 
 	"github.com/Amaimersion/yt-alt-ld-api/config"
+)
+
+var (
+	// ErrNoRow is returned when row that was requested doesn't exists.
+	ErrNoRow = errors.New("no such row")
 )
 
 // Open opens a database and connects to it.

@@ -64,3 +64,29 @@ func DecrementDislikesCount(database *sql.DB, video_id string) error {
 
 	return nil
 }
+
+// Reaction provides information about all reactions for specific video.
+type Reaction struct {
+	VideoID       string
+	LikesCount    int
+	DislikesCount int
+}
+
+// ReadReaction reads reactions information for specific video.
+// If such video doesn't exists, then ErrNoRow will be returned.
+func ReadReaction(database *sql.DB, videoID string) (Reaction, error) {
+	var reaction Reaction
+
+	row := database.QueryRow("SELECT * from reactions WHERE video_id = $1", videoID)
+	err := row.Scan(&reaction.VideoID, &reaction.LikesCount, &reaction.DislikesCount)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return reaction, ErrNoRow
+		}
+
+		return reaction, fmt.Errorf("ReadReaction: %v", err)
+	}
+
+	return reaction, nil
+}
