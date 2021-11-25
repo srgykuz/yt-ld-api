@@ -1,13 +1,14 @@
 package handler
 
 import (
+	"database/sql"
 	"net/http"
 )
 
 // HandleRemoveDislike handles "remove dislike" request.
 //
 // POST will remove user dislike on video.
-func HandleRemoveDislike(w http.ResponseWriter, req *http.Request) {
+func HandleRemoveDislike(w http.ResponseWriter, req *http.Request, database *sql.DB) {
 	resp := response{
 		status: http.StatusOK,
 	}

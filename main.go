@@ -33,7 +33,8 @@ func main() {
 		os.Exit(0)
 	}()
 
-	err = server.ListenAndServe(cfg.Host, cfg.Port)
+	envConfig := config.ReadEnv()
+	err = server.ListenAndServe(cfg.Host, cfg.Port, envConfig)
 
 	fmt.Fprintf(os.Stderr, "listen error: %v\n", err)
 	cleanup()

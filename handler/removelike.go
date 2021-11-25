@@ -1,13 +1,14 @@
 package handler
 
 import (
+	"database/sql"
 	"net/http"
 )
 
 // HandleRemoveLike handles "remove like" request.
 //
 // POST will remove user like on video.
-func HandleRemoveLike(w http.ResponseWriter, req *http.Request) {
+func HandleRemoveLike(w http.ResponseWriter, req *http.Request, database *sql.DB) {
 	resp := response{
 		status: http.StatusOK,
 	}

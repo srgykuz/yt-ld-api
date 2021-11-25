@@ -1,6 +1,7 @@
 package server
 
 import (
+	"database/sql"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -8,7 +9,11 @@ import (
 )
 
 func TestEndpointsAvailability(t *testing.T) {
-	h := createHandler()
+	// It is fine to pass empty DB because it
+	// shouldn't be used for empty requests.
+	database := &sql.DB{}
+
+	h := createHandler(database)
 	server := httptest.NewServer(h)
 
 	defer server.Close()

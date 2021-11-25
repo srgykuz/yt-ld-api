@@ -1,13 +1,14 @@
 package handler
 
 import (
+	"database/sql"
 	"net/http"
 )
 
 // HandleLike handles "like" request.
 //
 // POST will mark video as liked by user.
-func HandleLike(w http.ResponseWriter, req *http.Request) {
+func HandleLike(w http.ResponseWriter, req *http.Request, database *sql.DB) {
 	resp := response{
 		status: http.StatusOK,
 	}

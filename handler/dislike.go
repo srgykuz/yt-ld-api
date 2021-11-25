@@ -1,13 +1,14 @@
 package handler
 
 import (
+	"database/sql"
 	"net/http"
 )
 
 // HandleDislike handles "dislike" request.
 //
 // POST will mark video as disliked by user.
-func HandleDislike(w http.ResponseWriter, req *http.Request) {
+func HandleDislike(w http.ResponseWriter, req *http.Request, database *sql.DB) {
 	resp := response{
 		status: http.StatusOK,
 	}

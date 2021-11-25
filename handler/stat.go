@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"database/sql"
 	"net/http"
 )
 
@@ -8,7 +9,7 @@ import (
 //
 // GET will read video statistics (number of likes/dislikes,
 // user has liked/disliked the video, etc).
-func HandleStat(w http.ResponseWriter, req *http.Request) {
+func HandleStat(w http.ResponseWriter, req *http.Request, database *sql.DB) {
 	resp := response{
 		status: http.StatusOK,
 	}
