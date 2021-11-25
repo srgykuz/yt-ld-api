@@ -3,6 +3,9 @@ package handler
 import (
 	"database/sql"
 	"net/http"
+
+	"github.com/Amaimersion/yt-alt-ld-api/db"
+	"github.com/Amaimersion/yt-alt-ld-api/logger"
 )
 
 // HandleLike handles "like" request.
@@ -16,21 +19,17 @@ func HandleLike(w http.ResponseWriter, req *http.Request, database *sql.DB) {
 	switch req.Method {
 	case http.MethodPost:
 		var args videoInfoArgs
-		err := decodeRequestBody(req, &args)
 
-		if err != nil {
+		if err := decodeRequestBody(req, &args); err != nil {
 			resp.status = http.StatusBadRequest
 			break
 		}
 
-		result, err := createLike(args)
-
-		if err != nil {
-			resp.status = http.StatusBadRequest
+		if err := setLike(database, args); err != nil {
+			resp.status = http.StatusInternalServerError
+			logger.Info(err.Error())
 			break
 		}
-
-		resp.Result = result
 	default:
 		resp.status = http.StatusMethodNotAllowed
 	}
@@ -38,12 +37,10 @@ func HandleLike(w http.ResponseWriter, req *http.Request, database *sql.DB) {
 	resp.write(w)
 }
 
-type createLikeResult struct {
-	VideoID string `json:"videoID"`
-}
+func setLike(database *sql.DB, args videoInfoArgs) error {
+	if err := db.IncrementLikesCount(database, args.VideoID); err != nil {
+		return err
+	}
 
-func createLike(args videoInfoArgs) (createLikeResult, error) {
-	result := createLikeResult(args)
-
-	return result, nil
+	return nil
 }

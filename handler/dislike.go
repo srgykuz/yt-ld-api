@@ -3,6 +3,9 @@ package handler
 import (
 	"database/sql"
 	"net/http"
+
+	"github.com/Amaimersion/yt-alt-ld-api/db"
+	"github.com/Amaimersion/yt-alt-ld-api/logger"
 )
 
 // HandleDislike handles "dislike" request.
@@ -16,21 +19,17 @@ func HandleDislike(w http.ResponseWriter, req *http.Request, database *sql.DB) {
 	switch req.Method {
 	case http.MethodPost:
 		var args videoInfoArgs
-		err := decodeRequestBody(req, &args)
 
-		if err != nil {
+		if err := decodeRequestBody(req, &args); err != nil {
 			resp.status = http.StatusBadRequest
 			break
 		}
 
-		result, err := createDislike(args)
-
-		if err != nil {
-			resp.status = http.StatusBadRequest
+		if err := setDislike(database, args); err != nil {
+			resp.status = http.StatusInternalServerError
+			logger.Info(err.Error())
 			break
 		}
-
-		resp.Result = result
 	default:
 		resp.status = http.StatusMethodNotAllowed
 	}
@@ -38,12 +37,10 @@ func HandleDislike(w http.ResponseWriter, req *http.Request, database *sql.DB) {
 	resp.write(w)
 }
 
-type createDislikeResult struct {
-	VideoID string `json:"videoID"`
-}
+func setDislike(database *sql.DB, args videoInfoArgs) error {
+	if err := db.IncrementDislikesCount(database, args.VideoID); err != nil {
+		return err
+	}
 
-func createDislike(args videoInfoArgs) (createDislikeResult, error) {
-	result := createDislikeResult(args)
-
-	return result, nil
+	return nil
 }

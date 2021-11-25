@@ -3,6 +3,9 @@ package handler
 import (
 	"database/sql"
 	"net/http"
+
+	"github.com/Amaimersion/yt-alt-ld-api/db"
+	"github.com/Amaimersion/yt-alt-ld-api/logger"
 )
 
 // HandleRemoveDislike handles "remove dislike" request.
@@ -16,21 +19,17 @@ func HandleRemoveDislike(w http.ResponseWriter, req *http.Request, database *sql
 	switch req.Method {
 	case http.MethodPost:
 		var args videoInfoArgs
-		err := decodeRequestBody(req, &args)
 
-		if err != nil {
+		if err := decodeRequestBody(req, &args); err != nil {
 			resp.status = http.StatusBadRequest
 			break
 		}
 
-		result, err := deleteDislike(args)
-
-		if err != nil {
-			resp.status = http.StatusBadRequest
+		if err := removeDislike(database, args); err != nil {
+			resp.status = http.StatusInternalServerError
+			logger.Info(err.Error())
 			break
 		}
-
-		resp.Result = result
 	default:
 		resp.status = http.StatusMethodNotAllowed
 	}
@@ -38,12 +37,10 @@ func HandleRemoveDislike(w http.ResponseWriter, req *http.Request, database *sql
 	resp.write(w)
 }
 
-type deleteDislikeResult struct {
-	VideoID string `json:"videoID"`
-}
+func removeDislike(database *sql.DB, args videoInfoArgs) error {
+	if err := db.DecrementDislikesCount(database, args.VideoID); err != nil {
+		return err
+	}
 
-func deleteDislike(args videoInfoArgs) (deleteDislikeResult, error) {
-	result := deleteDislikeResult(args)
-
-	return result, nil
+	return nil
 }
