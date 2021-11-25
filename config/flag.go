@@ -4,8 +4,9 @@ import (
 	"flag"
 )
 
-// Config is the app configuration.
-type Config struct {
+// FlagConfig is a configuration that can be obtained
+// from command line flags.
+type FlagConfig struct {
 	// Bind server to this IP address.
 	Host string
 
@@ -28,19 +29,12 @@ const (
 	defaultDebugOutput = "/dev/stderr"
 )
 
-// Read reads configuration from available place.
+// ReadFlags reads configuration from command line flags.
 //
 // Default values will be used if some configuration value
-// is not presented. If unable to read at all, then error
-// will be returned.
-func Read() (Config, error) {
-	cfg := readFlags()
-
-	return cfg, nil
-}
-
-func readFlags() Config {
-	cfg := Config{}
+// is not presented.
+func ReadFlags() FlagConfig {
+	cfg := FlagConfig{}
 
 	flag.StringVar(
 		&cfg.Host,

@@ -12,13 +12,7 @@ import (
 )
 
 func main() {
-	cfg, err := config.Read()
-
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "unable to read config: %v\n", err)
-		os.Exit(1)
-	}
-
+	cfg := config.ReadFlags()
 	closeLogs, err := configureLogger(cfg)
 
 	if err != nil {
@@ -46,7 +40,7 @@ func main() {
 	os.Exit(1)
 }
 
-func configureLogger(cfg config.Config) (func(), error) {
+func configureLogger(cfg config.FlagConfig) (func(), error) {
 	infoF, closeInfoF, err := logger.OpenLogFile(cfg.InfoOutput)
 
 	if err != nil {
