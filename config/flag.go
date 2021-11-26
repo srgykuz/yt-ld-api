@@ -20,6 +20,10 @@ type FlagConfig struct {
 	// Output debug logs to this file.
 	// Use /dev/null to disable debug logs.
 	DebugOutput string
+
+	// Load environment variables from this file.
+	// Use empty string if nothing should be read.
+	EnvFile string
 }
 
 const (
@@ -27,6 +31,7 @@ const (
 	defaultPort        = "8080"
 	defaultInfoOutput  = "/dev/stderr"
 	defaultDebugOutput = "/dev/stderr"
+	defaultEnvFile     = ""
 )
 
 // ReadFlags reads configuration from command line flags.
@@ -59,6 +64,12 @@ func ReadFlags() FlagConfig {
 		"debugLog",
 		defaultDebugOutput,
 		"Output debug logs to this file.",
+	)
+	flag.StringVar(
+		&cfg.EnvFile,
+		"envFile",
+		defaultEnvFile,
+		"Load environment variables from this file.",
 	)
 
 	flag.Parse()

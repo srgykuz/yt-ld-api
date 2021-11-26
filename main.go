@@ -13,6 +13,14 @@ import (
 
 func main() {
 	cfg := config.ReadFlags()
+
+	if len(cfg.EnvFile) > 0 {
+		if err := config.LoadEnv(cfg.EnvFile); err != nil {
+			fmt.Fprintf(os.Stderr, "unable to load env file: %v\n", err)
+			os.Exit(1)
+		}
+	}
+
 	closeLogs, err := configureLogger(cfg)
 
 	if err != nil {

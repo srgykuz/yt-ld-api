@@ -2,6 +2,8 @@ package config
 
 import (
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 // EnvConfig is a configuration that can be obtained
@@ -27,6 +29,9 @@ type EnvConfig struct {
 //
 // If some key not presented in environment variables, then
 // its value will be equal to empty value.
+//
+// If you want to read environment variables from file,
+// then call LoadEnv() before this function.
 func ReadEnv() EnvConfig {
 	cfg := EnvConfig{}
 
@@ -37,4 +42,10 @@ func ReadEnv() EnvConfig {
 	cfg.DBName = os.Getenv("DB_NAME")
 
 	return cfg
+}
+
+// LoadEnv reads environment variables from file and loads them.
+// You should call this function as soon as possible, certainly before ReadEnv().
+func LoadEnv(file string) error {
+	return godotenv.Load(file)
 }

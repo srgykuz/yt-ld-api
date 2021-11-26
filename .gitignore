@@ -4,3 +4,7 @@ yt-alt-ld-api
 # VSCode
 .vscode/*
 !.vscode/launch.json
+
+# Secrets
+.env*
+!.env.example
