@@ -15,7 +15,9 @@
                 "--infoLog",
                 "/dev/stderr",
                 "--debugLog",
-                "/dev/stderr"
+                "/dev/stderr",
+                "--envFile",
+                ".env.development"
             ]
         }
     ]
