@@ -44,6 +44,7 @@ func createHandler(database *sql.DB) http.Handler {
 		pathRemoveLike    = prefix + "/remove-like"
 		pathRemoveDislike = prefix + "/remove-dislike"
 		pathStat          = prefix + "/stat"
+		pathSignUp        = prefix + "/sign-up"
 	)
 
 	mux := http.NewServeMux()
@@ -67,6 +68,10 @@ func createHandler(database *sql.DB) http.Handler {
 	mux.HandleFunc(
 		pathStat,
 		wrapCustomHandleFunc(handler.HandleStat, database),
+	)
+	mux.HandleFunc(
+		pathSignUp,
+		wrapCustomHandleFunc(handler.HandleSignUp, database),
 	)
 
 	handler := logReqResMiddleware(mux)

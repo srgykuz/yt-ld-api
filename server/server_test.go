@@ -51,6 +51,11 @@ func TestEndpointsAvailability(t *testing.T) {
 			method: http.MethodGet,
 			name:   "GET /stat",
 		},
+		{
+			path:   wantPrefix + "/sign-up",
+			method: http.MethodPost,
+			name:   "GET /sign-up",
+		},
 	}
 
 	for _, wantEndpoint := range wantEndpoints {
