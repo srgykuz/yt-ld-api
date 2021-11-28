@@ -9,6 +9,9 @@ import (
 // EnvConfig is a configuration that can be obtained
 // from environment variables.
 type EnvConfig struct {
+	// Single secret key that can be used for encryption/decryption purposes.
+	SecretKey string
+
 	// Name of database user.
 	DBUser string
 
@@ -35,6 +38,7 @@ type EnvConfig struct {
 func ReadEnv() EnvConfig {
 	cfg := EnvConfig{}
 
+	cfg.SecretKey = os.Getenv("SECRET_KEY")
 	cfg.DBUser = os.Getenv("DB_USER")
 	cfg.DBPassword = os.Getenv("DB_PASSWORD")
 	cfg.DBHost = os.Getenv("DB_HOST")
