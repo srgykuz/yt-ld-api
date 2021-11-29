@@ -11,21 +11,21 @@ import (
 // HandleRemoveLike handles "remove like" request.
 //
 // POST will remove user like on video.
-func HandleRemoveLike(w http.ResponseWriter, req *http.Request, database *sql.DB) {
+func HandleRemoveLike(hArgs HandlerArgs) {
 	resp := response{
 		status: http.StatusOK,
 	}
 
-	switch req.Method {
+	switch hArgs.Req.Method {
 	case http.MethodPost:
 		var args videoInfoArgs
 
-		if err := decodeRequestBody(req, &args); err != nil {
+		if err := decodeRequestBody(hArgs.Req, &args); err != nil {
 			resp.status = http.StatusBadRequest
 			break
 		}
 
-		if err := removeLike(database, args); err != nil {
+		if err := removeLike(hArgs.Database, args); err != nil {
 			resp.status = http.StatusInternalServerError
 			logger.Info(err.Error())
 			break
@@ -34,7 +34,7 @@ func HandleRemoveLike(w http.ResponseWriter, req *http.Request, database *sql.DB
 		resp.status = http.StatusMethodNotAllowed
 	}
 
-	resp.write(w)
+	resp.write(hArgs.W)
 }
 
 func removeLike(database *sql.DB, args videoInfoArgs) error {

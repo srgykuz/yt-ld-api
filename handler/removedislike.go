@@ -11,21 +11,21 @@ import (
 // HandleRemoveDislike handles "remove dislike" request.
 //
 // POST will remove user dislike on video.
-func HandleRemoveDislike(w http.ResponseWriter, req *http.Request, database *sql.DB) {
+func HandleRemoveDislike(hArgs HandlerArgs) {
 	resp := response{
 		status: http.StatusOK,
 	}
 
-	switch req.Method {
+	switch hArgs.Req.Method {
 	case http.MethodPost:
 		var args videoInfoArgs
 
-		if err := decodeRequestBody(req, &args); err != nil {
+		if err := decodeRequestBody(hArgs.Req, &args); err != nil {
 			resp.status = http.StatusBadRequest
 			break
 		}
 
-		if err := removeDislike(database, args); err != nil {
+		if err := removeDislike(hArgs.Database, args); err != nil {
 			resp.status = http.StatusInternalServerError
 			logger.Info(err.Error())
 			break
@@ -34,7 +34,7 @@ func HandleRemoveDislike(w http.ResponseWriter, req *http.Request, database *sql
 		resp.status = http.StatusMethodNotAllowed
 	}
 
-	resp.write(w)
+	resp.write(hArgs.W)
 }
 
 func removeDislike(database *sql.DB, args videoInfoArgs) error {

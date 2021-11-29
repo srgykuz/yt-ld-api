@@ -12,21 +12,21 @@ import (
 //
 // GET will read video statistics (number of likes/dislikes,
 // user has liked/disliked the video, etc).
-func HandleStat(w http.ResponseWriter, req *http.Request, database *sql.DB) {
+func HandleStat(hArgs HandlerArgs) {
 	resp := response{
 		status: http.StatusOK,
 	}
 
-	switch req.Method {
+	switch hArgs.Req.Method {
 	case http.MethodGet:
 		var args videoInfoArgs
 
-		if err := decodeRequestQuery(req, &args); err != nil {
+		if err := decodeRequestQuery(hArgs.Req, &args); err != nil {
 			resp.status = http.StatusBadRequest
 			break
 		}
 
-		result, err := getStat(database, args)
+		result, err := getStat(hArgs.Database, args)
 
 		if err != nil {
 			if err == db.ErrNoRow {
@@ -44,7 +44,7 @@ func HandleStat(w http.ResponseWriter, req *http.Request, database *sql.DB) {
 		resp.status = http.StatusMethodNotAllowed
 	}
 
-	resp.write(w)
+	resp.write(hArgs.W)
 }
 
 type getStatResult struct {

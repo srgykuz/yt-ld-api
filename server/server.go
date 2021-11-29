@@ -25,7 +25,10 @@ func ListenAndServe(host, port string, envCfg config.EnvConfig) error {
 	}
 
 	addr := net.JoinHostPort(host, port)
-	handler := createHandler(database)
+	handlerArgs := createHandlerArgs{
+		database: database,
+	}
+	handler := createHandler(handlerArgs)
 
 	logger.Info(
 		fmt.Sprintf("Server is listening on: http://%s", addr),
@@ -36,7 +39,11 @@ func ListenAndServe(host, port string, envCfg config.EnvConfig) error {
 	return err
 }
 
-func createHandler(database *sql.DB) http.Handler {
+type createHandlerArgs struct {
+	database *sql.DB
+}
+
+func createHandler(args createHandlerArgs) http.Handler {
 	const prefix = "/v0"
 	const (
 		pathLike          = prefix + "/like"
@@ -51,27 +58,27 @@ func createHandler(database *sql.DB) http.Handler {
 
 	mux.HandleFunc(
 		pathLike,
-		wrapCustomHandleFunc(handler.HandleLike, database),
+		wrapCustomHandleFunc(handler.HandleLike, args),
 	)
 	mux.HandleFunc(
 		pathDislike,
-		wrapCustomHandleFunc(handler.HandleDislike, database),
+		wrapCustomHandleFunc(handler.HandleDislike, args),
 	)
 	mux.HandleFunc(
 		pathRemoveLike,
-		wrapCustomHandleFunc(handler.HandleRemoveLike, database),
+		wrapCustomHandleFunc(handler.HandleRemoveLike, args),
 	)
 	mux.HandleFunc(
 		pathRemoveDislike,
-		wrapCustomHandleFunc(handler.HandleRemoveDislike, database),
+		wrapCustomHandleFunc(handler.HandleRemoveDislike, args),
 	)
 	mux.HandleFunc(
 		pathStat,
-		wrapCustomHandleFunc(handler.HandleStat, database),
+		wrapCustomHandleFunc(handler.HandleStat, args),
 	)
 	mux.HandleFunc(
 		pathSignUp,
-		wrapCustomHandleFunc(handler.HandleSignUp, database),
+		wrapCustomHandleFunc(handler.HandleSignUp, args),
 	)
 
 	handler := logReqResMiddleware(mux)
@@ -79,10 +86,15 @@ func createHandler(database *sql.DB) http.Handler {
 	return handler
 }
 
-type customHandleFunc func(http.ResponseWriter, *http.Request, *sql.DB)
+type customHandleFunc func(args handler.HandlerArgs)
 
-func wrapCustomHandleFunc(f customHandleFunc, database *sql.DB) http.HandlerFunc {
+func wrapCustomHandleFunc(f customHandleFunc, args createHandlerArgs) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		f(w, req, database)
+		hA := handler.HandlerArgs{
+			Req:      req,
+			W:        w,
+			Database: args.database,
+		}
+		f(hA)
 	}
 }

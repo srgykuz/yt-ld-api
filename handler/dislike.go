@@ -11,21 +11,21 @@ import (
 // HandleDislike handles "dislike" request.
 //
 // POST will mark video as disliked by user.
-func HandleDislike(w http.ResponseWriter, req *http.Request, database *sql.DB) {
+func HandleDislike(hArgs HandlerArgs) {
 	resp := response{
 		status: http.StatusOK,
 	}
 
-	switch req.Method {
+	switch hArgs.Req.Method {
 	case http.MethodPost:
 		var args videoInfoArgs
 
-		if err := decodeRequestBody(req, &args); err != nil {
+		if err := decodeRequestBody(hArgs.Req, &args); err != nil {
 			resp.status = http.StatusBadRequest
 			break
 		}
 
-		if err := setDislike(database, args); err != nil {
+		if err := setDislike(hArgs.Database, args); err != nil {
 			resp.status = http.StatusInternalServerError
 			logger.Info(err.Error())
 			break
@@ -34,7 +34,7 @@ func HandleDislike(w http.ResponseWriter, req *http.Request, database *sql.DB) {
 		resp.status = http.StatusMethodNotAllowed
 	}
 
-	resp.write(w)
+	resp.write(hArgs.W)
 }
 
 func setDislike(database *sql.DB, args videoInfoArgs) error {

@@ -11,14 +11,14 @@ import (
 // HandleSignUp handles "sign up" request.
 //
 // POST method will sign up the new user.
-func HandleSignUp(w http.ResponseWriter, req *http.Request, database *sql.DB) {
+func HandleSignUp(hArgs HandlerArgs) {
 	resp := response{
 		status: http.StatusOK,
 	}
 
-	switch req.Method {
+	switch hArgs.Req.Method {
 	case http.MethodPost:
-		err := signUpUser(database)
+		err := signUpUser(hArgs.Database)
 
 		if err != nil {
 			resp.status = http.StatusInternalServerError
@@ -29,7 +29,7 @@ func HandleSignUp(w http.ResponseWriter, req *http.Request, database *sql.DB) {
 		resp.status = http.StatusMethodNotAllowed
 	}
 
-	resp.write(w)
+	resp.write(hArgs.W)
 }
 
 func signUpUser(database *sql.DB) error {
