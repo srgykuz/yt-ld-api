@@ -3,6 +3,7 @@ package handler
 import (
 	"database/sql"
 	"net/http"
+	"time"
 
 	"github.com/Amaimersion/yt-alt-ld-api/db"
 	"github.com/Amaimersion/yt-alt-ld-api/logger"
@@ -18,13 +19,15 @@ func HandleSignUp(hArgs HandlerArgs) {
 
 	switch hArgs.Req.Method {
 	case http.MethodPost:
-		err := signUpUser(hArgs.Database)
+		result, err := signUpUser(hArgs.Database, hArgs.Secret)
 
 		if err != nil {
 			resp.status = http.StatusInternalServerError
 			logger.Info(err.Error())
 			break
 		}
+
+		resp.Result = result
 	default:
 		resp.status = http.StatusMethodNotAllowed
 	}
@@ -32,12 +35,29 @@ func HandleSignUp(hArgs HandlerArgs) {
 	resp.write(hArgs.W)
 }
 
-func signUpUser(database *sql.DB) error {
-	_, err := db.CreateUser(database)
+type signUpUserResult struct {
+	AccessToken string `json:"accessToken"`
+}
+
+func signUpUser(database *sql.DB, secret string) (signUpUserResult, error) {
+	result := signUpUserResult{}
+	id, err := db.CreateUser(database)
 
 	if err != nil {
-		return err
+		return result, err
 	}
 
-	return nil
+	token, err := createToken(
+		tokenData{UserID: id},
+		time.Now(),
+		secret,
+	)
+
+	if err != nil {
+		return result, err
+	}
+
+	result.AccessToken = token
+
+	return result, nil
 }
