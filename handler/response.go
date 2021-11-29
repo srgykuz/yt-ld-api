@@ -30,12 +30,13 @@ type response struct {
 }
 
 func (r *response) write(w http.ResponseWriter) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(r.status)
+	if r.Result != nil {
+		w.Header().Set("Content-Type", "application/json")
 
-	err := encodeResponseBody(w, r)
-
-	if err != nil {
-		logger.Info("unable to encode response body: " + err.Error())
+		if err := encodeResponseBody(w, r); err != nil {
+			logger.Info("unable to encode response body: " + err.Error())
+		}
 	}
+
+	w.WriteHeader(r.status)
 }
