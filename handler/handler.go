@@ -10,4 +10,5 @@ type HandlerArgs struct {
 	W        http.ResponseWriter
 	Req      *http.Request
 	Database *sql.DB
+	Secret   string
 }

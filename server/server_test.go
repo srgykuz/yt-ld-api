@@ -15,6 +15,7 @@ func TestEndpointsAvailability(t *testing.T) {
 
 	args := createHandlerArgs{
 		database: database,
+		secret:   "",
 	}
 	h := createHandler(args)
 	server := httptest.NewServer(h)

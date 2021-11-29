@@ -26,6 +26,7 @@ func ListenAndServe(host, port string, envCfg config.EnvConfig) error {
 
 	handlerArgs := createHandlerArgs{
 		database: database,
+		secret:   envCfg.SecretKey,
 	}
 	handler := createHandler(handlerArgs)
 	addr := net.JoinHostPort(host, port)
@@ -41,6 +42,7 @@ func ListenAndServe(host, port string, envCfg config.EnvConfig) error {
 
 type createHandlerArgs struct {
 	database *sql.DB
+	secret   string
 }
 
 func createHandler(args createHandlerArgs) http.Handler {
@@ -94,6 +96,7 @@ func wrapCustomHandlerFunc(f customHandlerFunc, args createHandlerArgs) http.Han
 			Req:      req,
 			W:        w,
 			Database: args.database,
+			Secret:   args.secret,
 		}
 		f(hA)
 	}
