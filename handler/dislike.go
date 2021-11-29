@@ -18,6 +18,13 @@ func HandleDislike(hArgs HandlerArgs) {
 
 	switch hArgs.Req.Method {
 	case http.MethodPost:
+		_, err := parseTokenFromRequest(hArgs.Req, hArgs.Secret)
+
+		if err != nil {
+			resp.status = http.StatusUnauthorized
+			break
+		}
+
 		var args videoInfoArgs
 
 		if err := decodeRequestBody(hArgs.Req, &args); err != nil {

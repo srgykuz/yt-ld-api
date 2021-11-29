@@ -19,6 +19,13 @@ func HandleStat(hArgs HandlerArgs) {
 
 	switch hArgs.Req.Method {
 	case http.MethodGet:
+		_, err := parseTokenFromRequest(hArgs.Req, hArgs.Secret)
+
+		if err != nil {
+			resp.status = http.StatusUnauthorized
+			break
+		}
+
 		var args videoInfoArgs
 
 		if err := decodeRequestQuery(hArgs.Req, &args); err != nil {

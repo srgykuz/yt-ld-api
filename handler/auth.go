@@ -2,6 +2,8 @@ package handler
 
 import (
 	"errors"
+	"net/http"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -61,4 +63,18 @@ func parseToken(tokenString string, secret string) (tokenData, error) {
 	}
 
 	return claims.tokenData, errors.New("token is not valid")
+}
+
+// parseTokenFromRequest is same as parseToken, but first it extracts
+// token string from request.
+func parseTokenFromRequest(req *http.Request, secret string) (tokenData, error) {
+	header := req.Header.Get("Authorization")
+	tokenString := strings.TrimPrefix(header, "Bearer ")
+	data := tokenData{}
+
+	if len(tokenString) == 0 {
+		return data, errors.New("header is missing")
+	}
+
+	return parseToken(tokenString, secret)
 }

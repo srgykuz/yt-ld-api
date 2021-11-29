@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"net/http/httptest"
 	"testing"
 	"time"
 )
@@ -49,6 +50,26 @@ func TestParseTokenInvalid(t *testing.T) {
 func TestParseTokenDifferentSecret(t *testing.T) {
 	newSecret := secret[1:]
 	_, err := parseToken(resultToken, newSecret)
+
+	if err == nil {
+		t.Fatal("err = nil, want some error")
+	}
+}
+
+func TestParseTokenFromRequest(t *testing.T) {
+	req := httptest.NewRequest("POST", "/", nil)
+	req.Header.Set("Authorization", "Bearer "+resultToken)
+
+	_, err := parseTokenFromRequest(req, secret)
+
+	if err != nil {
+		t.Fatalf("err = %v, want = nil", err)
+	}
+}
+
+func TestParseTokenFromRequestWithoutHeader(t *testing.T) {
+	req := httptest.NewRequest("POST", "/", nil)
+	_, err := parseTokenFromRequest(req, secret)
 
 	if err == nil {
 		t.Fatal("err = nil, want some error")
