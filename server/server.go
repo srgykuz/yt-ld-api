@@ -24,11 +24,11 @@ func ListenAndServe(host, port string, envCfg config.EnvConfig) error {
 		return err
 	}
 
-	addr := net.JoinHostPort(host, port)
 	handlerArgs := createHandlerArgs{
 		database: database,
 	}
 	handler := createHandler(handlerArgs)
+	addr := net.JoinHostPort(host, port)
 
 	logger.Info(
 		fmt.Sprintf("Server is listening on: http://%s", addr),
