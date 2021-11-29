@@ -18,7 +18,7 @@ func HandleRemoveDislike(hArgs HandlerArgs) {
 
 	switch hArgs.Req.Method {
 	case http.MethodPost:
-		_, err := parseTokenFromRequest(hArgs.Req, hArgs.Secret)
+		token, err := parseTokenFromRequest(hArgs.Req, hArgs.Secret)
 
 		if err != nil {
 			resp.status = http.StatusUnauthorized
@@ -32,7 +32,7 @@ func HandleRemoveDislike(hArgs HandlerArgs) {
 			break
 		}
 
-		if err := removeDislike(hArgs.Database, args); err != nil {
+		if err := removeDislike(hArgs.Database, args, token.UserID); err != nil {
 			resp.status = http.StatusInternalServerError
 			logger.Info(err.Error())
 			break
@@ -44,9 +44,27 @@ func HandleRemoveDislike(hArgs HandlerArgs) {
 	resp.write(hArgs.W)
 }
 
-func removeDislike(database *sql.DB, args videoInfoArgs) error {
+func removeDislike(database *sql.DB, args videoInfoArgs, userID int) error {
 	if err := db.DecrementDislikesCount(database, args.VideoID); err != nil {
 		return err
+	}
+
+	userReactions, err := db.ReadUserReactions(database, userID, args.VideoID)
+
+	if err != nil {
+		if err == db.ErrNoRow {
+			return nil
+		}
+
+		return err
+	}
+
+	if userReactions.HasDislike {
+		userReactions.HasDislike = false
+
+		if err := db.UpdateUserReactions(database, userReactions); err != nil {
+			return err
+		}
 	}
 
 	return nil

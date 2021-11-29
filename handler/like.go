@@ -18,7 +18,7 @@ func HandleLike(hArgs HandlerArgs) {
 
 	switch hArgs.Req.Method {
 	case http.MethodPost:
-		_, err := parseTokenFromRequest(hArgs.Req, hArgs.Secret)
+		token, err := parseTokenFromRequest(hArgs.Req, hArgs.Secret)
 
 		if err != nil {
 			resp.status = http.StatusUnauthorized
@@ -32,7 +32,7 @@ func HandleLike(hArgs HandlerArgs) {
 			break
 		}
 
-		if err := setLike(hArgs.Database, args); err != nil {
+		if err := setLike(hArgs.Database, args, token.UserID); err != nil {
 			resp.status = http.StatusInternalServerError
 			logger.Info(err.Error())
 			break
@@ -44,9 +44,40 @@ func HandleLike(hArgs HandlerArgs) {
 	resp.write(hArgs.W)
 }
 
-func setLike(database *sql.DB, args videoInfoArgs) error {
+func setLike(database *sql.DB, args videoInfoArgs, userID int) error {
 	if err := db.IncrementLikesCount(database, args.VideoID); err != nil {
 		return err
+	}
+
+	userReactions, err := db.ReadUserReactions(database, userID, args.VideoID)
+	create := false
+
+	if err != nil {
+		if err == db.ErrNoRow {
+			create = true
+		} else {
+			return err
+		}
+	}
+
+	if create {
+		if err := db.CreateUserReactions(database, userID, args.VideoID); err != nil {
+			return err
+		}
+
+		userReactions = db.UserReactions{
+			UserID:  userID,
+			VideoID: args.VideoID,
+		}
+	}
+
+	if create || !userReactions.HasLike {
+		userReactions.HasLike = true
+		userReactions.HasDislike = false
+
+		if err := db.UpdateUserReactions(database, userReactions); err != nil {
+			return err
+		}
 	}
 
 	return nil
