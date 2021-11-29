@@ -43,6 +43,10 @@ func createToken(data tokenData, now time.Time, secret string) (string, error) {
 // parseToken parses token that was created with createToken().
 func parseToken(tokenString string, secret string) (tokenData, error) {
 	keyFunc := func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("bad signing method")
+		}
+
 		return []byte(secret), nil
 	}
 	claims := tokenClaims{}
