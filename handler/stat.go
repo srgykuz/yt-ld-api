@@ -19,7 +19,7 @@ func HandleStat(hArgs HandlerArgs) {
 
 	switch hArgs.Req.Method {
 	case http.MethodGet:
-		_, err := parseTokenFromRequest(hArgs.Req, hArgs.Secret)
+		token, err := parseTokenFromRequest(hArgs.Req, hArgs.Secret)
 
 		if err != nil {
 			resp.status = http.StatusUnauthorized
@@ -33,7 +33,7 @@ func HandleStat(hArgs HandlerArgs) {
 			break
 		}
 
-		result, err := getStat(hArgs.Database, args)
+		result, err := getStat(hArgs.Database, args, token.UserID)
 
 		if err != nil {
 			if err == db.ErrNoRow {
@@ -55,20 +55,38 @@ func HandleStat(hArgs HandlerArgs) {
 }
 
 type getStatResult struct {
-	LikesCount    int `json:"likesCount"`
-	DislikesCount int `json:"dislikesCount"`
+	LikesCount    int  `json:"likesCount"`
+	DislikesCount int  `json:"dislikesCount"`
+	HasLike       bool `json:"hasLike"`
+	HasDislike    bool `json:"hasDislike"`
 }
 
-func getStat(database *sql.DB, args videoInfoArgs) (getStatResult, error) {
+func getStat(database *sql.DB, args videoInfoArgs, userID int) (getStatResult, error) {
 	var result getStatResult
+
 	reaction, err := db.ReadReaction(database, args.VideoID)
 
 	if err != nil {
 		return result, err
 	}
 
+	userReactions, err := db.ReadUserReactions(database, userID, args.VideoID)
+
+	if err != nil {
+		if err == db.ErrNoRow {
+			userReactions = db.UserReactions{
+				HasLike:    false,
+				HasDislike: false,
+			}
+		} else {
+			return result, err
+		}
+	}
+
 	result.LikesCount = reaction.LikesCount
 	result.DislikesCount = reaction.DislikesCount
+	result.HasLike = userReactions.HasLike
+	result.HasDislike = userReactions.HasDislike
 
 	return result, nil
 }
