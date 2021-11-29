@@ -58,27 +58,27 @@ func createHandler(args createHandlerArgs) http.Handler {
 
 	mux.HandleFunc(
 		pathLike,
-		wrapCustomHandleFunc(handler.HandleLike, args),
+		wrapCustomHandlerFunc(handler.HandleLike, args),
 	)
 	mux.HandleFunc(
 		pathDislike,
-		wrapCustomHandleFunc(handler.HandleDislike, args),
+		wrapCustomHandlerFunc(handler.HandleDislike, args),
 	)
 	mux.HandleFunc(
 		pathRemoveLike,
-		wrapCustomHandleFunc(handler.HandleRemoveLike, args),
+		wrapCustomHandlerFunc(handler.HandleRemoveLike, args),
 	)
 	mux.HandleFunc(
 		pathRemoveDislike,
-		wrapCustomHandleFunc(handler.HandleRemoveDislike, args),
+		wrapCustomHandlerFunc(handler.HandleRemoveDislike, args),
 	)
 	mux.HandleFunc(
 		pathStat,
-		wrapCustomHandleFunc(handler.HandleStat, args),
+		wrapCustomHandlerFunc(handler.HandleStat, args),
 	)
 	mux.HandleFunc(
 		pathSignUp,
-		wrapCustomHandleFunc(handler.HandleSignUp, args),
+		wrapCustomHandlerFunc(handler.HandleSignUp, args),
 	)
 
 	handler := logReqResMiddleware(mux)
@@ -86,9 +86,9 @@ func createHandler(args createHandlerArgs) http.Handler {
 	return handler
 }
 
-type customHandleFunc func(args handler.HandlerArgs)
+type customHandlerFunc func(args handler.HandlerArgs)
 
-func wrapCustomHandleFunc(f customHandleFunc, args createHandlerArgs) http.HandlerFunc {
+func wrapCustomHandlerFunc(f customHandlerFunc, args createHandlerArgs) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		hA := handler.HandlerArgs{
 			Req:      req,
