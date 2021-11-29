@@ -45,10 +45,6 @@ func HandleRemoveLike(hArgs HandlerArgs) {
 }
 
 func removeLike(database *sql.DB, args videoInfoArgs, userID int) error {
-	if err := db.DecrementLikesCount(database, args.VideoID); err != nil {
-		return err
-	}
-
 	userReactions, err := db.ReadUserReactions(database, userID, args.VideoID)
 
 	if err != nil {
@@ -60,6 +56,10 @@ func removeLike(database *sql.DB, args videoInfoArgs, userID int) error {
 	}
 
 	if userReactions.HasLike {
+		if err := db.DecrementLikesCount(database, args.VideoID); err != nil {
+			return err
+		}
+
 		userReactions.HasLike = false
 
 		if err := db.UpdateUserReactions(database, userReactions); err != nil {

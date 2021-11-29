@@ -45,10 +45,6 @@ func HandleLike(hArgs HandlerArgs) {
 }
 
 func setLike(database *sql.DB, args videoInfoArgs, userID int) error {
-	if err := db.IncrementLikesCount(database, args.VideoID); err != nil {
-		return err
-	}
-
 	userReactions, err := db.ReadUserReactions(database, userID, args.VideoID)
 	create := false
 
@@ -72,6 +68,16 @@ func setLike(database *sql.DB, args videoInfoArgs, userID int) error {
 	}
 
 	if create || !userReactions.HasLike {
+		if userReactions.HasDislike {
+			if err := db.DecrementDislikesCount(database, args.VideoID); err != nil {
+				return err
+			}
+		}
+
+		if err := db.IncrementLikesCount(database, args.VideoID); err != nil {
+			return err
+		}
+
 		userReactions.HasLike = true
 		userReactions.HasDislike = false
 

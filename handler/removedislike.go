@@ -45,10 +45,6 @@ func HandleRemoveDislike(hArgs HandlerArgs) {
 }
 
 func removeDislike(database *sql.DB, args videoInfoArgs, userID int) error {
-	if err := db.DecrementDislikesCount(database, args.VideoID); err != nil {
-		return err
-	}
-
 	userReactions, err := db.ReadUserReactions(database, userID, args.VideoID)
 
 	if err != nil {
@@ -60,6 +56,10 @@ func removeDislike(database *sql.DB, args videoInfoArgs, userID int) error {
 	}
 
 	if userReactions.HasDislike {
+		if err := db.DecrementDislikesCount(database, args.VideoID); err != nil {
+			return err
+		}
+
 		userReactions.HasDislike = false
 
 		if err := db.UpdateUserReactions(database, userReactions); err != nil {
