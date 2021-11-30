@@ -57,7 +57,7 @@ func TestEndpointsAvailability(t *testing.T) {
 		},
 		{
 			path:   wantPrefix + "/sign-up",
-			method: http.MethodPost,
+			method: http.MethodGet, // not POST because we don't want to trigger DB queries
 			name:   "GET /sign-up",
 		},
 	}
