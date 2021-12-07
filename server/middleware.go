@@ -26,3 +26,20 @@ func logReqResMiddleware(next http.Handler) http.Handler {
 
 	return http.HandlerFunc(fn)
 }
+
+func handleOptionsMiddleware(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+		w.Header().Add("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Add("Access-Control-Allow-Headers", "Content-Type, Accept, Authorization, Keep-Alive")
+		w.Header().Add("Access-Control-Max-Age", "3600")
+
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+		} else {
+			next.ServeHTTP(w, r)
+		}
+	}
+
+	return http.HandlerFunc(fn)
+}

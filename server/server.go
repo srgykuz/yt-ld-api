@@ -83,7 +83,11 @@ func createHandler(args createHandlerArgs) http.Handler {
 		wrapCustomHandlerFunc(handler.HandleSignUp, args),
 	)
 
-	handler := logReqResMiddleware(mux)
+	var handler http.Handler = mux
+
+	// Order is matters!
+	handler = handleOptionsMiddleware(handler)
+	handler = logReqResMiddleware(handler)
 
 	return handler
 }
