@@ -67,6 +67,17 @@ func getStat(database *sql.DB, args videoInfoArgs, userID int) (getStatResult, e
 	reaction, err := db.ReadReaction(database, args.VideoID)
 
 	if err != nil {
+		if err == db.ErrNoRow {
+			result := getStatResult{
+				LikesCount:    0,
+				DislikesCount: 0,
+				HasLike:       false,
+				HasDislike:    false,
+			}
+
+			return result, nil
+		}
+
 		return result, err
 	}
 
