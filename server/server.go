@@ -79,6 +79,8 @@ func createHandler(args wrapHandlerFuncArgs) http.Handler {
 	var handler http.Handler = mux
 
 	// Order is matters!
+	// The earlier it is declared here,
+	// the later it will be called during request
 	handler = handleOptionsMiddleware(handler)
 	handler = enableCORSMiddleware(handler)
 	handler = logReqResMiddleware(handler)
