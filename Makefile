@@ -1,6 +1,9 @@
 build:
 	go build .
 
+test:
+	go test ./...
+
 migrate:
 	go run ./migrations
 
