@@ -6,8 +6,6 @@ import (
 	"fmt"
 
 	_ "github.com/lib/pq"
-
-	"github.com/Amaimersion/yt-ld-api/config"
 )
 
 var (
@@ -15,16 +13,24 @@ var (
 	ErrNoRow = errors.New("no row")
 )
 
+type OpenArgs struct {
+	User     string
+	Password string
+	Host     string
+	Port     string
+	Name     string
+}
+
 // Open opens a database and connects to it.
 // You should call this function only once.
-func Open(env config.EnvConfig) (*sql.DB, error) {
+func Open(args OpenArgs) (*sql.DB, error) {
 	connStr := fmt.Sprintf(
 		"postgres://%v:%v@%v:%v/%v?sslmode=disable&connect_timeout=10",
-		env.DBUser,
-		env.DBPassword,
-		env.DBHost,
-		env.DBPort,
-		env.DBName,
+		args.User,
+		args.Password,
+		args.Host,
+		args.Port,
+		args.Name,
 	)
 	db, err := sql.Open("postgres", connStr)
 

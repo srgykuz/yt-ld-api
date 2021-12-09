@@ -7,6 +7,7 @@ import (
 	"syscall"
 
 	"github.com/Amaimersion/yt-ld-api/config"
+	"github.com/Amaimersion/yt-ld-api/db"
 	"github.com/Amaimersion/yt-ld-api/logger"
 	"github.com/Amaimersion/yt-ld-api/server"
 )
@@ -42,7 +43,19 @@ func main() {
 	}()
 
 	env := config.ReadEnv()
-	err = server.ListenAndServe(flags.Host, flags.Port, env)
+	serverArgs := server.ListenAndServeArgs{
+		Host:   flags.Host,
+		Port:   flags.Port,
+		Secret: env.SecretKey,
+		Database: db.OpenArgs{
+			User:     env.DBUser,
+			Password: env.DBPassword,
+			Host:     env.DBHost,
+			Port:     env.DBPort,
+			Name:     env.DBName,
+		},
+	}
+	err = server.ListenAndServe(serverArgs)
 
 	fmt.Fprintf(os.Stderr, "ListenAndServe: %v\n", err)
 	cleanup()

@@ -6,19 +6,25 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/Amaimersion/yt-ld-api/config"
 	"github.com/Amaimersion/yt-ld-api/db"
 	"github.com/Amaimersion/yt-ld-api/handler"
 	"github.com/Amaimersion/yt-ld-api/logger"
 )
+
+type ListenAndServeArgs struct {
+	Host     string
+	Port     string
+	Secret   string
+	Database db.OpenArgs
+}
 
 // ListenAndServe initializes all dependencies that are required to
 // serve HTTP requests (DB connection, etc), binds server on given host
 // and port. On success it starts listen and serve HTTP requests.
 //
 // It is a blocking function. This function always returns non-nil error.
-func ListenAndServe(host, port string, env config.EnvConfig) error {
-	database, err := db.Open(env)
+func ListenAndServe(args ListenAndServeArgs) error {
+	database, err := db.Open(args.Database)
 
 	if err != nil {
 		return err
@@ -26,10 +32,10 @@ func ListenAndServe(host, port string, env config.EnvConfig) error {
 
 	wrapArgs := wrapHandlerFuncArgs{
 		database: database,
-		secret:   env.SecretKey,
+		secret:   args.Secret,
 	}
 	handler := createHandler(wrapArgs)
-	addr := net.JoinHostPort(host, port)
+	addr := net.JoinHostPort(args.Host, args.Port)
 
 	logger.Info(fmt.Sprintf("Server is listening on: http://%s", addr))
 
