@@ -3,6 +3,7 @@
 - Add CORS handling.
 - `/stat` will return empty successful result instead of HTTP 404.
 - Rename module in `go.mod`.
+- Default value of `--debugLog` will be `/dev/null`.
 
 
 # 0.1.0 (November 30, 2021)

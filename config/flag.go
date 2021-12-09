@@ -30,7 +30,7 @@ const (
 	defaultHost        = "0.0.0.0"
 	defaultPort        = "8080"
 	defaultInfoOutput  = "/dev/stderr"
-	defaultDebugOutput = "/dev/stderr"
+	defaultDebugOutput = "/dev/null"
 	defaultEnvFile     = ""
 )
 
