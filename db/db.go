@@ -7,7 +7,7 @@ import (
 
 	_ "github.com/lib/pq"
 
-	"github.com/Amaimersion/yt-alt-ld-api/config"
+	"github.com/Amaimersion/yt-ld-api/config"
 )
 
 var (

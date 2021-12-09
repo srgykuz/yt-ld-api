@@ -6,9 +6,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/Amaimersion/yt-alt-ld-api/config"
-	"github.com/Amaimersion/yt-alt-ld-api/logger"
-	"github.com/Amaimersion/yt-alt-ld-api/server"
+	"github.com/Amaimersion/yt-ld-api/config"
+	"github.com/Amaimersion/yt-ld-api/logger"
+	"github.com/Amaimersion/yt-ld-api/server"
 )
 
 func main() {

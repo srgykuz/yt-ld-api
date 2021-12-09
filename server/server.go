@@ -6,10 +6,10 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/Amaimersion/yt-alt-ld-api/config"
-	"github.com/Amaimersion/yt-alt-ld-api/db"
-	"github.com/Amaimersion/yt-alt-ld-api/handler"
-	"github.com/Amaimersion/yt-alt-ld-api/logger"
+	"github.com/Amaimersion/yt-ld-api/config"
+	"github.com/Amaimersion/yt-ld-api/db"
+	"github.com/Amaimersion/yt-ld-api/handler"
+	"github.com/Amaimersion/yt-ld-api/logger"
 )
 
 // ListenAndServe initializes all dependencies that are required to

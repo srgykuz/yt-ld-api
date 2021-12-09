@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/Amaimersion/yt-alt-ld-api/logger"
+	"github.com/Amaimersion/yt-ld-api/logger"
 )
 
 // encodeResponseBody encodes response Go value into JSON body.

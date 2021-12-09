@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Amaimersion/yt-alt-ld-api/db"
-	"github.com/Amaimersion/yt-alt-ld-api/logger"
+	"github.com/Amaimersion/yt-ld-api/db"
+	"github.com/Amaimersion/yt-ld-api/logger"
 )
 
 // HandleSignUp handles "sign up" request.

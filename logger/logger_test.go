@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Amaimersion/yt-alt-ld-api/logger"
+	"github.com/Amaimersion/yt-ld-api/logger"
 )
 
 func TestInfo(t *testing.T) {

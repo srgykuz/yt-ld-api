@@ -6,7 +6,7 @@ import (
 
 	"github.com/felixge/httpsnoop"
 
-	"github.com/Amaimersion/yt-alt-ld-api/logger"
+	"github.com/Amaimersion/yt-ld-api/logger"
 )
 
 func logReqResMiddleware(next http.Handler) http.Handler {

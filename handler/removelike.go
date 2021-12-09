@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"net/http"
 
-	"github.com/Amaimersion/yt-alt-ld-api/db"
-	"github.com/Amaimersion/yt-alt-ld-api/logger"
+	"github.com/Amaimersion/yt-ld-api/db"
+	"github.com/Amaimersion/yt-ld-api/logger"
 )
 
 // HandleRemoveLike handles "remove like" request.

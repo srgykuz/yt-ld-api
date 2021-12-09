@@ -1,4 +1,4 @@
-module github.com/Amaimersion/yt-alt-ld-api
+module github.com/Amaimersion/yt-ld-api
 
 go 1.17
 
