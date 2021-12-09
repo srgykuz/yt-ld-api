@@ -17,35 +17,28 @@ import (
 // and port. On success it starts listen and serve HTTP requests.
 //
 // It is a blocking function. This function always returns non-nil error.
-func ListenAndServe(host, port string, envCfg config.EnvConfig) error {
-	database, err := db.Open(envCfg)
+func ListenAndServe(host, port string, env config.EnvConfig) error {
+	database, err := db.Open(env)
 
 	if err != nil {
 		return err
 	}
 
-	handlerArgs := createHandlerArgs{
+	wrapArgs := wrapHandlerFuncArgs{
 		database: database,
-		secret:   envCfg.SecretKey,
+		secret:   env.SecretKey,
 	}
-	handler := createHandler(handlerArgs)
+	handler := createHandler(wrapArgs)
 	addr := net.JoinHostPort(host, port)
 
-	logger.Info(
-		fmt.Sprintf("Server is listening on: http://%s", addr),
-	)
+	logger.Info(fmt.Sprintf("Server is listening on: http://%s", addr))
 
 	err = http.ListenAndServe(addr, handler)
 
 	return err
 }
 
-type createHandlerArgs struct {
-	database *sql.DB
-	secret   string
-}
-
-func createHandler(args createHandlerArgs) http.Handler {
+func createHandler(args wrapHandlerFuncArgs) http.Handler {
 	const prefix = "/v0"
 	const (
 		pathLike          = prefix + "/like"
@@ -60,27 +53,27 @@ func createHandler(args createHandlerArgs) http.Handler {
 
 	mux.HandleFunc(
 		pathLike,
-		wrapCustomHandlerFunc(handler.HandleLike, args),
+		wrapHandlerFunc(handler.HandleLike, args),
 	)
 	mux.HandleFunc(
 		pathDislike,
-		wrapCustomHandlerFunc(handler.HandleDislike, args),
+		wrapHandlerFunc(handler.HandleDislike, args),
 	)
 	mux.HandleFunc(
 		pathRemoveLike,
-		wrapCustomHandlerFunc(handler.HandleRemoveLike, args),
+		wrapHandlerFunc(handler.HandleRemoveLike, args),
 	)
 	mux.HandleFunc(
 		pathRemoveDislike,
-		wrapCustomHandlerFunc(handler.HandleRemoveDislike, args),
+		wrapHandlerFunc(handler.HandleRemoveDislike, args),
 	)
 	mux.HandleFunc(
 		pathStat,
-		wrapCustomHandlerFunc(handler.HandleStat, args),
+		wrapHandlerFunc(handler.HandleStat, args),
 	)
 	mux.HandleFunc(
 		pathSignUp,
-		wrapCustomHandlerFunc(handler.HandleSignUp, args),
+		wrapHandlerFunc(handler.HandleSignUp, args),
 	)
 
 	var handler http.Handler = mux
@@ -92,9 +85,14 @@ func createHandler(args createHandlerArgs) http.Handler {
 	return handler
 }
 
-type customHandlerFunc func(args handler.HandlerArgs)
+type handlerFunc func(args handler.HandlerArgs)
 
-func wrapCustomHandlerFunc(f customHandlerFunc, args createHandlerArgs) http.HandlerFunc {
+type wrapHandlerFuncArgs struct {
+	database *sql.DB
+	secret   string
+}
+
+func wrapHandlerFunc(f handlerFunc, args wrapHandlerFuncArgs) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
 		hA := handler.HandlerArgs{
 			Req:      req,

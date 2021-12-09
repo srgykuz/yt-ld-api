@@ -13,11 +13,11 @@ func TestEndpointsAvailability(t *testing.T) {
 	// shouldn't be used for empty requests.
 	database := &sql.DB{}
 
-	args := createHandlerArgs{
+	wrapArgs := wrapHandlerFuncArgs{
 		database: database,
 		secret:   "",
 	}
-	h := createHandler(args)
+	h := createHandler(wrapArgs)
 	server := httptest.NewServer(h)
 
 	defer server.Close()
