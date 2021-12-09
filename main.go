@@ -12,19 +12,19 @@ import (
 )
 
 func main() {
-	cfg := config.ReadFlags()
+	flags := config.ReadFlags()
 
-	if len(cfg.EnvFile) > 0 {
-		if err := config.LoadEnv(cfg.EnvFile); err != nil {
-			fmt.Fprintf(os.Stderr, "unable to load env file: %v\n", err)
+	if len(flags.EnvFile) > 0 {
+		if err := config.LoadEnv(flags.EnvFile); err != nil {
+			fmt.Fprintf(os.Stderr, "LoadEnv: %v\n", err)
 			os.Exit(1)
 		}
 	}
 
-	closeLogs, err := configureLogger(cfg)
+	closeLogs, err := configureLogger(flags)
 
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "unable to configure logger: %v\n", err)
+		fmt.Fprintf(os.Stderr, "configureLogger: %v\n", err)
 		os.Exit(1)
 	}
 
@@ -41,14 +41,17 @@ func main() {
 		os.Exit(0)
 	}()
 
-	envConfig := config.ReadEnv()
-	err = server.ListenAndServe(cfg.Host, cfg.Port, envConfig)
+	env := config.ReadEnv()
+	err = server.ListenAndServe(flags.Host, flags.Port, env)
 
-	fmt.Fprintf(os.Stderr, "listen error: %v\n", err)
+	fmt.Fprintf(os.Stderr, "ListenAndServe: %v\n", err)
 	cleanup()
 	os.Exit(1)
 }
 
+// configureLogger configures global app logger.
+//
+// Use returned function to close log files.
 func configureLogger(cfg config.FlagConfig) (func(), error) {
 	infoF, closeInfoF, err := logger.OpenLogFile(cfg.InfoOutput)
 
