@@ -6,65 +6,47 @@ import (
 	"testing"
 )
 
-func TestLogReqResMiddleware(t *testing.T) {
-	wantRedirectPath := "/redirect"
-	wantStatusCode := http.StatusMovedPermanently
-
-	redirH := http.RedirectHandler(wantRedirectPath, wantStatusCode)
-	middH := logReqResMiddleware(redirH)
-
-	w := httptest.NewRecorder()
-	req := httptest.NewRequest(http.MethodGet, "/", nil)
-
-	middH.ServeHTTP(w, req)
-
-	if w.Code != wantStatusCode {
-		t.Errorf("status code = %v, want = %v", w.Code, wantStatusCode)
+func TestMiddlewareNotInterruptsCallChain(t *testing.T) {
+	type middlewareTest struct {
+		name       string
+		middleware func(http.Handler) http.Handler
 	}
 
-	if l := w.Header().Get("Location"); l != wantRedirectPath {
-		t.Errorf("redirect location = %s, want = %s", l, wantRedirectPath)
-	}
-}
-
-func TestEnableCorsMiddleware(t *testing.T) {
-	wantRedirectPath := "/redirect"
-	wantStatusCode := http.StatusMovedPermanently
-
-	redirH := http.RedirectHandler(wantRedirectPath, wantStatusCode)
-	middH := enableCORSMiddleware(redirH)
-
-	w := httptest.NewRecorder()
-	req := httptest.NewRequest(http.MethodGet, "/", nil)
-
-	middH.ServeHTTP(w, req)
-
-	if w.Code != wantStatusCode {
-		t.Errorf("status code = %v, want = %v", w.Code, wantStatusCode)
+	tests := []middlewareTest{
+		{
+			name:       "logReqRes",
+			middleware: logReqResMiddleware,
+		},
+		{
+			name:       "enableCORS",
+			middleware: enableCORSMiddleware,
+		},
+		{
+			name:       "handleOptions",
+			middleware: handleOptionsMiddleware,
+		},
 	}
 
-	if l := w.Header().Get("Location"); l != wantRedirectPath {
-		t.Errorf("redirect location = %s, want = %s", l, wantRedirectPath)
-	}
-}
+	for _, test := range tests {
+		t.Run(test.name, func(runT *testing.T) {
+			wantRedirectPath := "/redirect"
+			wantStatusCode := http.StatusMovedPermanently
 
-func TestHandleOptionsMiddleware(t *testing.T) {
-	wantRedirectPath := "/redirect"
-	wantStatusCode := http.StatusMovedPermanently
+			redirH := http.RedirectHandler(wantRedirectPath, wantStatusCode)
+			middH := test.middleware(redirH)
 
-	redirH := http.RedirectHandler(wantRedirectPath, wantStatusCode)
-	middH := handleOptionsMiddleware(redirH)
+			w := httptest.NewRecorder()
+			req := httptest.NewRequest(http.MethodGet, "/", nil)
 
-	w := httptest.NewRecorder()
-	req := httptest.NewRequest(http.MethodGet, "/", nil)
+			middH.ServeHTTP(w, req)
 
-	middH.ServeHTTP(w, req)
+			if w.Code != wantStatusCode {
+				runT.Errorf("status code = %v, want = %v", w.Code, wantStatusCode)
+			}
 
-	if w.Code != wantStatusCode {
-		t.Errorf("status code = %v, want = %v", w.Code, wantStatusCode)
-	}
-
-	if l := w.Header().Get("Location"); l != wantRedirectPath {
-		t.Errorf("redirect location = %s, want = %s", l, wantRedirectPath)
+			if l := w.Header().Get("Location"); l != wantRedirectPath {
+				runT.Errorf("redirect location = %s, want = %s", l, wantRedirectPath)
+			}
+		})
 	}
 }
