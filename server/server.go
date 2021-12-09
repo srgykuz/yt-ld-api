@@ -80,6 +80,7 @@ func createHandler(args wrapHandlerFuncArgs) http.Handler {
 
 	// Order is matters!
 	handler = handleOptionsMiddleware(handler)
+	handler = enableCORSMiddleware(handler)
 	handler = logReqResMiddleware(handler)
 
 	return handler

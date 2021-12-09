@@ -27,6 +27,27 @@ func TestLogReqResMiddleware(t *testing.T) {
 	}
 }
 
+func TestEnableCorsMiddleware(t *testing.T) {
+	wantRedirectPath := "/redirect"
+	wantStatusCode := http.StatusMovedPermanently
+
+	redirH := http.RedirectHandler(wantRedirectPath, wantStatusCode)
+	middH := enableCORSMiddleware(redirH)
+
+	w := httptest.NewRecorder()
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+
+	middH.ServeHTTP(w, req)
+
+	if w.Code != wantStatusCode {
+		t.Errorf("status code = %v, want = %v", w.Code, wantStatusCode)
+	}
+
+	if l := w.Header().Get("Location"); l != wantRedirectPath {
+		t.Errorf("redirect location = %s, want = %s", l, wantRedirectPath)
+	}
+}
+
 func TestHandleOptionsMiddleware(t *testing.T) {
 	wantRedirectPath := "/redirect"
 	wantStatusCode := http.StatusMovedPermanently
