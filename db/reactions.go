@@ -6,11 +6,11 @@ import (
 )
 
 // IncrementLikesCount increments likes count of specific video by 1.
-// It creates a new row if such video_id doesn't exists.
-func IncrementLikesCount(database *sql.DB, video_id string) error {
+// It creates a new row if such videoID doesn't exists.
+func IncrementLikesCount(database *sql.DB, videoID string) error {
 	_, err := database.Exec(
 		"INSERT INTO reactions (video_id, likes_count, dislikes_count) VALUES ($1, 1, 0) ON CONFLICT (video_id) DO UPDATE SET likes_count = reactions.likes_count + 1",
-		video_id,
+		videoID,
 	)
 
 	if err != nil {
@@ -21,13 +21,13 @@ func IncrementLikesCount(database *sql.DB, video_id string) error {
 }
 
 // DecrementLikesCount decrements likes count of specific video by 1.
-// It creates a new row if such video_id doesn't exists.
+// It creates a new row if such videoID doesn't exists.
 //
 // Note that it doesn't checks if new value will be less than 0.
-func DecrementLikesCount(database *sql.DB, video_id string) error {
+func DecrementLikesCount(database *sql.DB, videoID string) error {
 	_, err := database.Exec(
 		"INSERT INTO reactions (video_id, likes_count, dislikes_count) VALUES ($1, 0, 0) ON CONFLICT (video_id) DO UPDATE SET likes_count = reactions.likes_count - 1",
-		video_id,
+		videoID,
 	)
 
 	if err != nil {
@@ -38,10 +38,10 @@ func DecrementLikesCount(database *sql.DB, video_id string) error {
 }
 
 // Same as IncrementLikesCount, but operates with dislikes count.
-func IncrementDislikesCount(database *sql.DB, video_id string) error {
+func IncrementDislikesCount(database *sql.DB, videoID string) error {
 	_, err := database.Exec(
 		"INSERT INTO reactions (video_id, likes_count, dislikes_count) VALUES ($1, 0, 1) ON CONFLICT (video_id) DO UPDATE SET dislikes_count = reactions.dislikes_count + 1",
-		video_id,
+		videoID,
 	)
 
 	if err != nil {
@@ -52,10 +52,10 @@ func IncrementDislikesCount(database *sql.DB, video_id string) error {
 }
 
 // Same as DecrementLikesCount, but operates with dislikes count.
-func DecrementDislikesCount(database *sql.DB, video_id string) error {
+func DecrementDislikesCount(database *sql.DB, videoID string) error {
 	_, err := database.Exec(
 		"INSERT INTO reactions (video_id, likes_count, dislikes_count) VALUES ($1, 0, 0) ON CONFLICT (video_id) DO UPDATE SET dislikes_count = reactions.dislikes_count - 1",
-		video_id,
+		videoID,
 	)
 
 	if err != nil {
