@@ -11,20 +11,20 @@ import (
 )
 
 var (
-	// ErrNoRow is returned when row that was requested doesn't exists.
-	ErrNoRow = errors.New("no such row")
+	// ErrNoRow is returned when requested row doesn't exists.
+	ErrNoRow = errors.New("no row")
 )
 
 // Open opens a database and connects to it.
 // You should call this function only once.
-func Open(cfg config.EnvConfig) (*sql.DB, error) {
+func Open(env config.EnvConfig) (*sql.DB, error) {
 	connStr := fmt.Sprintf(
 		"postgres://%v:%v@%v:%v/%v?sslmode=disable&connect_timeout=10",
-		cfg.DBUser,
-		cfg.DBPassword,
-		cfg.DBHost,
-		cfg.DBPort,
-		cfg.DBName,
+		env.DBUser,
+		env.DBPassword,
+		env.DBHost,
+		env.DBPort,
+		env.DBName,
 	)
 	db, err := sql.Open("postgres", connStr)
 
