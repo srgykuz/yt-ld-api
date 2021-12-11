@@ -36,12 +36,8 @@ func HandleStat(hArgs HandlerArgs) {
 		result, err := getStat(hArgs.Database, args, token.UserID)
 
 		if err != nil {
-			if err == db.ErrNoRow {
-				resp.status = http.StatusNotFound
-			} else {
-				resp.status = http.StatusInternalServerError
-				logger.Info(err.Error())
-			}
+			resp.status = http.StatusInternalServerError
+			logger.Info(err.Error())
 
 			break
 		}
