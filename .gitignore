@@ -1,9 +1,6 @@
 yt-ld-api
 *.exe
-
-# VSCode
-.vscode/*
-
-# Secrets
 .env*
 !.env.example
+
+.vscode
