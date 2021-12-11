@@ -3,7 +3,6 @@ yt-ld-api
 
 # VSCode
 .vscode/*
-!.vscode/launch.json
 
 # Secrets
 .env*
