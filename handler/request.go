@@ -7,7 +7,7 @@ import (
 	"net/url"
 )
 
-type requestBodyValue interface {
+type requestBody interface {
 	// isValid checks if all needed fields have valid values.
 	isValid() bool
 }
@@ -25,7 +25,7 @@ var (
 //
 // Error will be returned if unable to decode properly.
 // errInvalidRequestBody will be returned if result value is invalid.
-func decodeRequestBody(req *http.Request, v requestBodyValue) error {
+func decodeRequestBody(req *http.Request, v requestBody) error {
 	err := json.NewDecoder(req.Body).Decode(v)
 
 	if err != nil {
@@ -46,7 +46,7 @@ func decodeRequestBody(req *http.Request, v requestBodyValue) error {
 //
 // Error will be returned if unable to decode properly.
 // errInvalidRequestQuery will be returned if result value is invalid.
-func decodeRequestQuery(req *http.Request, v requestBodyValue) error {
+func decodeRequestQuery(req *http.Request, v requestBody) error {
 	switch value := v.(type) {
 	case *videoInfoArgs:
 		q := req.URL.Query()
