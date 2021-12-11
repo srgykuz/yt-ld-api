@@ -6,6 +6,7 @@
 - Rename module in `go.mod`.
 - Default value of `--debugLog` will be `/dev/null`.
 - Migrations script will read config env variables instead of expecting single `DB_URL` env variable.
+- Remove `.vscode` folder. Create your own config based on `Makefile`
 
 
 # 0.1.0 (November 30, 2021)
