@@ -4,10 +4,11 @@ import (
 	"testing"
 
 	"github.com/Amaimersion/yt-ld-api/db"
+	"github.com/Amaimersion/yt-ld-api/dbtest"
 )
 
 func TestCreateUser(t *testing.T) {
-	database, closeDB, err := openTestDB()
+	database, closeDB, err := dbtest.Open()
 
 	if err != nil {
 		t.Fatal(err)

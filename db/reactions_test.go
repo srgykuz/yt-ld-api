@@ -5,10 +5,11 @@ import (
 	"testing"
 
 	"github.com/Amaimersion/yt-ld-api/db"
+	"github.com/Amaimersion/yt-ld-api/dbtest"
 )
 
 func TestReadReaction(t *testing.T) {
-	database, closeDB, err := openTestDB()
+	database, closeDB, err := dbtest.Open()
 
 	if err != nil {
 		t.Fatal(err)
@@ -89,7 +90,7 @@ func TestIncrementDecrement(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(runT *testing.T) {
-			database, closeDB, err := openTestDB()
+			database, closeDB, err := dbtest.Open()
 
 			if err != nil {
 				runT.Fatal(err)

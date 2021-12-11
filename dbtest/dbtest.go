@@ -1,4 +1,4 @@
-package db_test
+package dbtest
 
 import (
 	"database/sql"
@@ -12,7 +12,7 @@ import (
 	"github.com/Amaimersion/yt-ld-api/db"
 )
 
-// openTestDB constructs DB that is intended for "one test" purpose.
+// Open opens DB that is intended for "one test" purpose.
 //
 // For DB credentials it reads .env.testing file at the root.
 // Note that at moment of opening the DB already should be created
@@ -28,7 +28,7 @@ import (
 //
 // So, opened DB should be applied only for one test and no more!
 // Life cycle: open -> populate (if needed) -> test -> clean
-func openTestDB() (*sql.DB, func() error, error) {
+func Open() (*sql.DB, func() error, error) {
 	emptyCleanup := func() error {
 		return nil
 	}

@@ -4,10 +4,11 @@ import (
 	"testing"
 
 	"github.com/Amaimersion/yt-ld-api/db"
+	"github.com/Amaimersion/yt-ld-api/dbtest"
 )
 
 func TestCreateUserReactions(t *testing.T) {
-	database, closeDB, err := openTestDB()
+	database, closeDB, err := dbtest.Open()
 
 	if err != nil {
 		t.Fatal(err)
@@ -30,7 +31,7 @@ func TestCreateUserReactions(t *testing.T) {
 }
 
 func TestReadUserReactions(t *testing.T) {
-	database, closeDB, err := openTestDB()
+	database, closeDB, err := dbtest.Open()
 
 	if err != nil {
 		t.Fatal(err)
@@ -59,7 +60,7 @@ func TestReadUserReactions(t *testing.T) {
 }
 
 func TestUpdateUserReactions(t *testing.T) {
-	database, closeDB, err := openTestDB()
+	database, closeDB, err := dbtest.Open()
 
 	if err != nil {
 		t.Fatal(err)
