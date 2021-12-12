@@ -2,6 +2,7 @@
 
 - Add CORS handling.
 - Add DB tests.
+- Add handler tests.
 - `/stat` will return empty successful result instead of HTTP 404.
 - Rename module in `go.mod`.
 - Default value of `--debugLog` will be `/dev/null`.
