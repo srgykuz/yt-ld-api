@@ -11,11 +11,11 @@ import (
 func TestReadReaction(t *testing.T) {
 	database, closeDB, err := dbtest.Open()
 
+	defer closeDB()
+
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	defer closeDB()
 
 	videoID := "random-video-id"
 
@@ -92,11 +92,11 @@ func TestIncrementDecrement(t *testing.T) {
 		t.Run(test.name, func(runT *testing.T) {
 			database, closeDB, err := dbtest.Open()
 
+			defer closeDB()
+
 			if err != nil {
 				runT.Fatal(err)
 			}
-
-			defer closeDB()
 
 			err = test.method(database, videoID)
 

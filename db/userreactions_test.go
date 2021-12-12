@@ -10,11 +10,11 @@ import (
 func TestCreateUserReactions(t *testing.T) {
 	database, closeDB, err := dbtest.Open()
 
+	defer closeDB()
+
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	defer closeDB()
 
 	userID, err := db.CreateUser(database)
 
@@ -33,11 +33,11 @@ func TestCreateUserReactions(t *testing.T) {
 func TestReadUserReactions(t *testing.T) {
 	database, closeDB, err := dbtest.Open()
 
+	defer closeDB()
+
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	defer closeDB()
 
 	userID, err := db.CreateUser(database)
 
@@ -62,11 +62,11 @@ func TestReadUserReactions(t *testing.T) {
 func TestUpdateUserReactions(t *testing.T) {
 	database, closeDB, err := dbtest.Open()
 
+	defer closeDB()
+
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	defer closeDB()
 
 	userID, err := db.CreateUser(database)
 

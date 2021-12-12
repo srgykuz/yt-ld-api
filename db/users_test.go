@@ -10,11 +10,11 @@ import (
 func TestCreateUser(t *testing.T) {
 	database, closeDB, err := dbtest.Open()
 
+	defer closeDB()
+
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	defer closeDB()
 
 	_, err = db.CreateUser(database)
 

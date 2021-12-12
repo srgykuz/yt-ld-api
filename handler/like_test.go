@@ -10,11 +10,11 @@ import (
 func TestSetLike(t *testing.T) {
 	database, closeDB, err := dbtest.Open()
 
+	defer closeDB()
+
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	defer closeDB()
 
 	videoID := "test"
 	userID, err := db.CreateUser(database)
@@ -54,11 +54,11 @@ func TestSetLike(t *testing.T) {
 func TestSetLikeFirstTime(t *testing.T) {
 	database, closeDB, err := dbtest.Open()
 
+	defer closeDB()
+
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	defer closeDB()
 
 	videoID := "test"
 	userID, err := db.CreateUser(database)
@@ -94,11 +94,11 @@ func TestSetLikeFirstTime(t *testing.T) {
 func TestSetLikeMultipleTimes(t *testing.T) {
 	database, closeDB, err := dbtest.Open()
 
+	defer closeDB()
+
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	defer closeDB()
 
 	videoID := "test"
 	userID, err := db.CreateUser(database)
@@ -138,11 +138,11 @@ func TestSetLikeMultipleTimes(t *testing.T) {
 func TestSetLikeRemoveDislike(t *testing.T) {
 	database, closeDB, err := dbtest.Open()
 
+	defer closeDB()
+
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	defer closeDB()
 
 	videoID := "test"
 	userID, err := db.CreateUser(database)

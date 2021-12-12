@@ -10,11 +10,11 @@ import (
 func TestGetStatNoSuchVideo(t *testing.T) {
 	database, closeDB, err := dbtest.Open()
 
+	defer closeDB()
+
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	defer closeDB()
 
 	args := videoInfoArgs{
 		VideoID: "test",
@@ -40,11 +40,11 @@ func TestGetStatNoSuchVideo(t *testing.T) {
 func TestGetStatNoSuchUser(t *testing.T) {
 	database, closeDB, err := dbtest.Open()
 
+	defer closeDB()
+
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	defer closeDB()
 
 	videoID := "test"
 	err = db.IncrementLikesCount(database, videoID)
@@ -77,11 +77,11 @@ func TestGetStatNoSuchUser(t *testing.T) {
 func TestGetStat(t *testing.T) {
 	database, closeDB, err := dbtest.Open()
 
+	defer closeDB()
+
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	defer closeDB()
 
 	videoID := "test"
 	err = db.IncrementLikesCount(database, videoID)

@@ -9,11 +9,11 @@ import (
 func TestSignUpUser(t *testing.T) {
 	database, closeDB, err := dbtest.Open()
 
+	defer closeDB()
+
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	defer closeDB()
 
 	result, err := signUpUser(database, "secret")
 

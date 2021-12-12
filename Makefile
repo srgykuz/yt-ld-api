@@ -2,7 +2,7 @@ build:
 	go build .
 
 test:
-	go test ./...
+	go test -p 1 ./...
 
 migrate:
 	go run ./migrations --envFile $(ENV_FILE)

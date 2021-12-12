@@ -10,11 +10,11 @@ import (
 func TestSetDislike(t *testing.T) {
 	database, closeDB, err := dbtest.Open()
 
+	defer closeDB()
+
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	defer closeDB()
 
 	videoID := "test"
 	userID, err := db.CreateUser(database)
@@ -54,11 +54,11 @@ func TestSetDislike(t *testing.T) {
 func TestSetDislikeFirstTime(t *testing.T) {
 	database, closeDB, err := dbtest.Open()
 
+	defer closeDB()
+
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	defer closeDB()
 
 	videoID := "test"
 	userID, err := db.CreateUser(database)
@@ -94,11 +94,11 @@ func TestSetDislikeFirstTime(t *testing.T) {
 func TestSetDislikeMultipleTimes(t *testing.T) {
 	database, closeDB, err := dbtest.Open()
 
+	defer closeDB()
+
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	defer closeDB()
 
 	videoID := "test"
 	userID, err := db.CreateUser(database)
@@ -138,11 +138,11 @@ func TestSetDislikeMultipleTimes(t *testing.T) {
 func TestSetDislikeRemoveLike(t *testing.T) {
 	database, closeDB, err := dbtest.Open()
 
+	defer closeDB()
+
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	defer closeDB()
 
 	videoID := "test"
 	userID, err := db.CreateUser(database)

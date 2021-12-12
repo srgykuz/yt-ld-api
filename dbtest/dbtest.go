@@ -3,6 +3,7 @@ package dbtest
 import (
 	"database/sql"
 	"errors"
+	"sync"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
@@ -11,6 +12,8 @@ import (
 	"github.com/Amaimersion/yt-ld-api/config"
 	"github.com/Amaimersion/yt-ld-api/db"
 )
+
+var mu sync.Mutex
 
 // Open opens DB that is intended for "one test" purpose.
 //
@@ -21,15 +24,24 @@ import (
 // Opened DB will be migrated to actual state.
 //
 // Cleanup function will be returned. You must call this function
-// when you done your test. In case if you will not call it, then
-// at next openTestDB you will get an error, and in that case you
-// will have to manually delete DB (i.e. DROP DATABASE). In case
-// if openTestDB returns error, you can skip calling of cleanup.
+// when you done your test. If you will not call it, then next call
+// to Open will block current thread. Even if Open returns error,
+// you anyway should call cleanup function.
 //
-// So, opened DB should be applied only for one test and no more!
-// Life cycle: open -> populate (if needed) -> test -> clean
+// Note that Open is safe for concurrent access only across single package.
+// If multiple packages will call Open in parallel, then most likely you will
+// get an error which tells that DB is up to date. You shouldn't call
+// Open in parallel, limit to 1 thread only. For example, go test ./...
+// by default runs multiple packages in parallel in case if you have enough
+// CPU cores, in that case you should call with -p 1 flag.
+//
+// So, opened DB should be used only for one active test across all packages.
+// Test life cycle: open -> populate -> test -> clean.
 func Open() (*sql.DB, func() error, error) {
+	mu.Lock()
+
 	emptyCleanup := func() error {
+		defer mu.Unlock()
 		return nil
 	}
 
@@ -79,6 +91,8 @@ func Open() (*sql.DB, func() error, error) {
 	}
 
 	cleanup := func() error {
+		defer mu.Unlock()
+
 		if err := migrations.Drop(); err != nil {
 			return err
 		}
